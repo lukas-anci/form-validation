@@ -11,5 +11,46 @@
 }
 
 .main-form h1 {
-  color: tomato;
+}
+
+.main-form input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.8rem 0.5rem 0.8rem;
+  margin: 0.9vw 0;
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 20px;
+}
+.button {
+  background-color: #3128a5;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+}
+.check-group {
+  display: block;
+  font-size: 1em;
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.is-invalid {
+  border-color: red;
+  background-color: rgb(241, 144, 127);
+}
+
+.error-msg {
+  background-color: tomato;
+  color: snow;
+  border-radius: 0.5em;
+  margin-top: 0.8em;
+  margin-bottom: 1em;
+  padding: 0.2em;
+  font-size: 0.7em;
 }
