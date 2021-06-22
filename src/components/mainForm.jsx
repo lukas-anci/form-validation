@@ -1,3 +1,4 @@
+import Joi from 'joi-browser';
 import React, { Component } from 'react';
 class MainForm extends Component {
   state = {
@@ -11,13 +12,37 @@ class MainForm extends Component {
     errors: {},
   };
 
+  // validacijos schema
+  schema = {
+    username: Joi.string().min(3).required(),
+    email: Joi.string().email({ minDomainSegments: 2 }).required(),
+    password: Joi.string().min(4).required(),
+    repeatPassword: Joi.ref('passworrd'),
+    agreement: Joi.boolean().required(),
+  };
+
   validateForm() {
-    if (this.state.account.username.length === 0) {
-      this.setState({ errors: { username: 'Cant be blank' } });
+    const result = Joi.validate(this.state.account, this.schema, {
+      abortEarly: false,
+    });
+    console.log('Joi result', result);
+
+    if (!result.error) return;
+
+    const errors = {};
+    // errors.username = result.error.details
+    for (let item of result.error.details) {
+      errors[item.path[0]] = item.message;
     }
-    if (this.state.account.username.length <= 3) {
-      this.setState({ errors: { username: 'At least 3 letters' } });
-    }
+    console.log('local errors', errors);
+    this.setState({ errors: errors });
+
+    // if (this.state.account.username.length === 0) {
+    //   this.setState({ errors: { username: 'Cant be blank' } });
+    // }
+    // if (this.state.account.username.length <= 3) {
+    //   this.setState({ errors: { username: 'At least 3 letters' } });
+    // }
   }
 
   handleSubmit = (e) => {
@@ -59,29 +84,38 @@ class MainForm extends Component {
           <input
             onChange={this.handleChange}
             value={account.email}
-            className="input"
+            className={'input' + (errors.email && 'is-invalid')}
             type="email"
             name="email"
             id=""
           />
+          {this.state.errors.email && (
+            <p className="error-msg">{this.state.errors.email}</p>
+          )}
           Password:
           <input
             onChange={this.handleChange}
             value={account.password}
-            className="input"
+            className={'input' + (errors.password && 'is-invalid')}
             type="password"
             name="password"
             id=""
           />
+          {this.state.errors.password && (
+            <p className="error-msg">{this.state.errors.password}</p>
+          )}
           Repeat Password:
           <input
             onChange={this.handleChange}
             value={account.repeatPassword}
-            className="input"
+            className={'input' + (errors.repeatPassword && 'is-invalid')}
             type="password"
             name="repeatPassword"
             id=""
           />
+          {this.state.errors.repeatPassword && (
+            <p className="error-msg">{this.state.errors.repeatPassword}</p>
+          )}
           <div className="check-group">
             <label htmlFor="Terms and Conditions:">Terms and Conditions:</label>
             <input
@@ -91,6 +125,9 @@ class MainForm extends Component {
               name="agreement"
             />
           </div>
+          {this.state.errors.agreement && (
+            <p className="error-msg">{this.state.errors.agreement}</p>
+          )}
           <button className="button" type="submit">
             Send
           </button>
