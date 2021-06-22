@@ -7,9 +7,13 @@ class MainForm extends Component {
       email: '',
       password: '',
       repeatPassword: '',
-      agreement: '',
+      agreement: false,
     },
     errors: {},
+    errorMessages: {
+      agreement: 'PLease confirm terms and conditions',
+      repeatPassword: 'Passwords must match',
+    },
   };
 
   // validacijos schema
@@ -18,7 +22,7 @@ class MainForm extends Component {
     email: Joi.string().email({ minDomainSegments: 2 }).required(),
     password: Joi.string().min(4).required(),
     repeatPassword: Joi.ref('passworrd'),
-    agreement: Joi.boolean().required(),
+    agreement: Joi.boolean().required().invalid(false).default(false),
   };
 
   validateForm() {
@@ -45,9 +49,16 @@ class MainForm extends Component {
     // }
   }
 
+  resetErrors() {
+    this.setState({ errors: {} });
+    // jei agreement yra false tai => ''
+    this.state.account.agreement === false &&
+      this.setState({ account: { ...this.state.account, agreement: '' } });
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
-    this.setState({ errors: {} });
+    this.resetErrors();
     this.validateForm();
   };
 
@@ -89,7 +100,7 @@ class MainForm extends Component {
   }
 
   render() {
-    const { account, errors } = this.state;
+    const { account, errors, errorMessages } = this.state;
     return (
       <div className="main-form">
         <form autoComplete="off" onSubmit={this.handleSubmit}>
@@ -139,7 +150,7 @@ class MainForm extends Component {
             id=""
           />
           {this.state.errors.repeatPassword && (
-            <p className="error-msg">{this.state.errors.repeatPassword}</p>
+            <p className="error-msg">{errorMessages.repeatPassword}</p>
           )}
           <div className="check-group">
             <label htmlFor="Terms and Conditions:">Terms and Conditions:</label>
@@ -151,7 +162,7 @@ class MainForm extends Component {
             />
           </div>
           {this.state.errors.agreement && (
-            <p className="error-msg">{this.state.errors.agreement}</p>
+            <p className="error-msg">{errorMessages.agreement}</p>
           )}
           <button className="button" type="submit">
             Send
